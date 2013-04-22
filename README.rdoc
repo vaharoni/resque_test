@@ -22,7 +22,7 @@ See /CrashReporter and /DiagnosticReports for crash reports.
   See Gemfile.lock for others
 
 == To reproduce the issue:
-=> Obsolete per comment above about ability to reproduce without a Rails App
+>> Obsolete per comment above about ability to reproduce without a Rails App
 
   $ bundle install
   
@@ -31,7 +31,7 @@ See /CrashReporter and /DiagnosticReports for crash reports.
   (2) Run `bundle exec rails s` and go to localhost:3000/resque. User: admin, Password: password. Click on 'live-poll'. Come back in 10 minutes to get the stack trace below.
 
 == Changes from a new Rails application
-=> Obsolete per comment above about ability to reproduce without a Rails App
+>> Obsolete per comment above about ability to reproduce without a Rails App
 
   Gemfile 
     Added 'resque' and 'redis' gems 
