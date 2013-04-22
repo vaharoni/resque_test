@@ -13,13 +13,6 @@ resque-web sometimes aborted unexpectedly for a project I'm working on. To debug
 
 See /CrashReporter and /DiagnosticReports for crash reports.
 
-== To reproduce the issue:
-  $ bundle install
-  
-  Assuming your redis is at redis://localhost:6379/0 do one of the following:
-  (1) Run resque-web and click on 'live-poll'. Come back in 10 minutes to see the page crashed.
-  (2) Run `bundle exec rails s` and go to localhost:3000/resque. User: admin, Password: password. Click on 'live-poll'. Come back in 10 minutes to get the stack trace below.
-
 == Versions
   OS: Mac OS X 10.6.8 build 10K549
   ruby-2.0.0-p0
@@ -28,7 +21,18 @@ See /CrashReporter and /DiagnosticReports for crash reports.
   resque gem 1.24.1  
   See Gemfile.lock for others
 
-== Changes from a new rails application
+== To reproduce the issue:
+=> Obsolete per comment above about ability to reproduce without a Rails App
+
+  $ bundle install
+  
+  Assuming your redis is at redis://localhost:6379/0 do one of the following:
+  (1) Run resque-web and click on 'live-poll'. Come back in 10 minutes to see the page crashed.
+  (2) Run `bundle exec rails s` and go to localhost:3000/resque. User: admin, Password: password. Click on 'live-poll'. Come back in 10 minutes to get the stack trace below.
+
+== Changes from a new Rails application
+=> Obsolete per comment above about ability to reproduce without a Rails App
+
   Gemfile 
     Added 'resque' and 'redis' gems 
 
