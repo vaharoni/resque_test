@@ -2,16 +2,21 @@ This repository is meant to demonstrate segfault caused by resque-web.
 
 resque-web sometimes aborted unexpectedly for a project I'm working on. To debug the issue further, I mounted it to the web server, and got the stack trace attached below.
 
+See CrashReporter and DiagnosticReports for crash reports.
+
 == To reproduce the issue:
-Assuming your redis is at redis://localhost:6379/0 do one of the following:
-(1) Run resque-web and click on 'live-poll'. Come back in 10 minutes to get a 404.
-(2) Run `bundle exec rails s` and go to localhost:3000/resque. User: admin, Password: password. Click on 'live-poll'. Come back in 10 minutes to get the stack trace below.
+  $ bundle install
+  
+  Assuming your redis is at redis://localhost:6379/0 do one of the following:
+  (1) Run resque-web and click on 'live-poll'. Come back in 10 minutes to see the page crashed.
+  (2) Run `bundle exec rails s` and go to localhost:3000/resque. User: admin, Password: password. Click on 'live-poll'. Come back in 10 minutes to get the stack trace below.
 
 == Versions
   OS: Mac OS X 10.6.8 build 10K549
   ruby-2.0.0-p0
-  Redis version 2.6.12
-  resque 1.24.1
+  Redis database version 2.6.12
+  redis gem 3.0.0
+  resque gem 1.24.1  
   See Gemfile.lock for others
 
 == Changes from a new rails application
@@ -25,7 +30,11 @@ Assuming your redis is at redis://localhost:6379/0 do one of the following:
     Added resque.rb
   
   lib
-    added secure_resque_server.rb
+    Added secure_resque_server.rb
+    Added test_job.rb (to reproduce the issue there is no need to post a job)
+    
+  routes.rb
+    Mounted resque-web at the top of the file
   
 == Stack trace
   Started GET "/resque/overview.poll" for 127.0.0.1 at 2013-04-21 17:44:01 -0700

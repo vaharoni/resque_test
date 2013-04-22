@@ -1,0 +1,154 @@
+Process:         ruby [4590]
+Path:            /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/bin/ruby
+Identifier:      ruby
+Version:         ??? (???)
+Code Type:       X86-64 (Native)
+Parent Process:  ??? [1]
+
+Date/Time:       2013-04-21 17:29:26.149 -0700
+OS Version:      Mac OS X 10.6.8 (10K549)
+Report Version:  6
+
+Exception Type:  EXC_CRASH (SIGABRT)
+Exception Codes: 0x0000000000000000, 0x0000000000000000
+Crashed Thread:  3
+
+Application Specific Information:
+abort() called
+
+Thread 0:  Dispatch queue: com.apple.main-thread
+0   libSystem.B.dylib             	0x00007fff810d4932 select$DARWIN_EXTSN + 10
+1   libruby.2.0.0.dylib           	0x00000001001b753b rb_thread_fd_select + 619 (thread.c:3200)
+2   libruby.2.0.0.dylib           	0x00000001000767af select_call + 1039 (io.c:8091)
+3   libruby.2.0.0.dylib           	0x000000010004b37f rb_ensure + 127 (eval.c:813)
+4   libruby.2.0.0.dylib           	0x000000010006e34e rb_f_select + 158 (io.c:8416)
+5   libruby.2.0.0.dylib           	0x000000010018af59 vm_call_cfunc_with_frame + 761 (vm_insnhelper.c:1438)
+6   libruby.2.0.0.dylib           	0x00000001001a33cc vm_call_method + 828 (vm_insnhelper.c:1528)
+7   libruby.2.0.0.dylib           	0x000000010018f028 vm_exec_core + 8648 (insns.def:1017)
+8   libruby.2.0.0.dylib           	0x0000000100195e91 vm_exec + 2737 (vm.c:1175)
+9   libruby.2.0.0.dylib           	0x0000000100197d98 vm_call0_body + 472 (vm_eval.c:170)
+10  libruby.2.0.0.dylib           	0x00000001001a069e rb_funcall2 + 446 (vm_eval.c:805)
+11  libruby.2.0.0.dylib           	0x00000001000a4ea3 rb_class_new_instance + 51 (object.c:1750)
+12  libruby.2.0.0.dylib           	0x000000010018af59 vm_call_cfunc_with_frame + 761 (vm_insnhelper.c:1438)
+13  libruby.2.0.0.dylib           	0x00000001001a33cc vm_call_method + 828 (vm_insnhelper.c:1528)
+14  libruby.2.0.0.dylib           	0x000000010018efc3 vm_exec_core + 8547 (insns.def:1002)
+15  libruby.2.0.0.dylib           	0x0000000100195e91 vm_exec + 2737 (vm.c:1175)
+16  libruby.2.0.0.dylib           	0x000000010019649e rb_iseq_eval + 270 (vm.c:1411)
+17  libruby.2.0.0.dylib           	0x000000010004f31b rb_load_internal + 331 (load.c:559)
+18  libruby.2.0.0.dylib           	0x000000010004f493 rb_f_load + 131 (load.c:640)
+19  libruby.2.0.0.dylib           	0x000000010018af59 vm_call_cfunc_with_frame + 761 (vm_insnhelper.c:1438)
+20  libruby.2.0.0.dylib           	0x00000001001a33cc vm_call_method + 828 (vm_insnhelper.c:1528)
+21  libruby.2.0.0.dylib           	0x000000010018f028 vm_exec_core + 8648 (insns.def:1017)
+22  libruby.2.0.0.dylib           	0x0000000100195e91 vm_exec + 2737 (vm.c:1175)
+23  libruby.2.0.0.dylib           	0x00000001001967a5 eval_string_with_cref + 693 (vm_eval.c:1231)
+24  libruby.2.0.0.dylib           	0x0000000100196db2 rb_f_eval + 242 (vm_eval.c:1319)
+25  libruby.2.0.0.dylib           	0x000000010018af59 vm_call_cfunc_with_frame + 761 (vm_insnhelper.c:1438)
+26  libruby.2.0.0.dylib           	0x00000001001a33cc vm_call_method + 828 (vm_insnhelper.c:1528)
+27  libruby.2.0.0.dylib           	0x000000010018f028 vm_exec_core + 8648 (insns.def:1017)
+28  libruby.2.0.0.dylib           	0x0000000100195e91 vm_exec + 2737 (vm.c:1175)
+29  libruby.2.0.0.dylib           	0x0000000100196355 rb_iseq_eval_main + 357 (vm.c:1424)
+30  libruby.2.0.0.dylib           	0x000000010004c0a2 ruby_exec_internal + 178 (eval.c:250)
+31  libruby.2.0.0.dylib           	0x000000010004e60c ruby_run_node + 60 (eval.c:315)
+32  ruby                          	0x0000000100000edf main + 79 (main.c:38)
+33  ruby                          	0x0000000100000e84 start + 52
+
+Thread 1:
+0   libSystem.B.dylib             	0x00007fff810d4932 select$DARWIN_EXTSN + 10
+1   libruby.2.0.0.dylib           	0x00000001001b2f5f thread_timer + 463 (thread_pthread.c:1237)
+2   libSystem.B.dylib             	0x00007fff810c9fd6 _pthread_start + 331
+3   libSystem.B.dylib             	0x00007fff810c9e89 thread_start + 13
+
+Thread 2:
+0   libSystem.B.dylib             	0x00007fff810cba6a __semwait_signal + 10
+1   libSystem.B.dylib             	0x00007fff810cf881 _pthread_cond_wait + 1286
+2   libruby.2.0.0.dylib           	0x00000001001b544e native_sleep + 350 (thread_pthread.c:346)
+3   libruby.2.0.0.dylib           	0x00000001001b56d1 sleep_timeval + 305 (thread.c:1502)
+4   libruby.2.0.0.dylib           	0x00000001000d4630 rb_f_sleep + 80 (process.c:4108)
+5   libruby.2.0.0.dylib           	0x000000010018af59 vm_call_cfunc_with_frame + 761 (vm_insnhelper.c:1438)
+6   libruby.2.0.0.dylib           	0x000000010018f028 vm_exec_core + 8648 (insns.def:1017)
+7   libruby.2.0.0.dylib           	0x0000000100195e91 vm_exec + 2737 (vm.c:1175)
+8   libruby.2.0.0.dylib           	0x00000001001971d4 vm_invoke_proc + 756 (vm.c:648)
+9   libruby.2.0.0.dylib           	0x0000000100197451 rb_vm_invoke_proc + 33 (vm.c:717)
+10  libruby.2.0.0.dylib           	0x00000001001b874b thread_start_func_2 + 1707 (thread.c:496)
+11  libruby.2.0.0.dylib           	0x00000001001b8981 thread_start_func_1 + 65 (thread_pthread.c:741)
+12  libSystem.B.dylib             	0x00007fff810c9fd6 _pthread_start + 331
+13  libSystem.B.dylib             	0x00007fff810c9e89 thread_start + 13
+
+Thread 3 Crashed:
+0   libSystem.B.dylib             	0x00007fff811039ce __semwait_signal_nocancel + 10
+1   libSystem.B.dylib             	0x00007fff811038d0 nanosleep$NOCANCEL + 129
+2   libSystem.B.dylib             	0x00007fff811603ce usleep$NOCANCEL + 57
+3   libSystem.B.dylib             	0x00007fff8117fa00 abort + 93
+4   libruby.2.0.0.dylib           	0x0000000100045584 0x100003000 + 271748
+5   libruby.2.0.0.dylib           	0x000000010012050f 0x100003000 + 1168655
+6   libSystem.B.dylib             	0x00007fff810f11ba _sigtramp + 26
+7   libruby.2.0.0.dylib           	0x0000000100063bed gc_mark + 45 (gc.c:2569)
+8   libruby.2.0.0.dylib           	0x00000001001870c7 rb_gc_mark_unlinked_live_method_entries + 55 (vm_method.c:117)
+9   libruby.2.0.0.dylib           	0x00000001000653d8 gc_marks + 408 (gc.c:2902)
+10  libruby.2.0.0.dylib           	0x000000010006657c newobj + 700 (gc.c:1969)
+11  libruby.2.0.0.dylib           	0x0000000100066aff rb_newobj_of + 31 (gc.c:686)
+12  libruby.2.0.0.dylib           	0x00000001001321f4 str_new + 68 (string.c:376)
+13  libruby.2.0.0.dylib           	0x0000000100137455 rb_str_subseq + 101 (string.c:739)
+14  libruby.2.0.0.dylib           	0x00000001000f27b9 rb_reg_nth_match + 89 (re.c:1477)
+15  libruby.2.0.0.dylib           	0x00000001001925c4 vm_exec_core + 22372 (vm_insnhelper.c:264)
+16  libruby.2.0.0.dylib           	0x0000000100195e91 vm_exec + 2737 (vm.c:1175)
+17  libruby.2.0.0.dylib           	0x00000001001a466b rb_yield + 507 (vm_eval.c:922)
+18  libruby.2.0.0.dylib           	0x00000001001408ad str_gsub + 861 (string.c:3862)
+19  libruby.2.0.0.dylib           	0x000000010018af59 vm_call_cfunc_with_frame + 761 (vm_insnhelper.c:1438)
+20  libruby.2.0.0.dylib           	0x00000001001a33cc vm_call_method + 828 (vm_insnhelper.c:1528)
+21  libruby.2.0.0.dylib           	0x000000010018efc3 vm_exec_core + 8547 (insns.def:1002)
+22  libruby.2.0.0.dylib           	0x0000000100195e91 vm_exec + 2737 (vm.c:1175)
+23  libruby.2.0.0.dylib           	0x00000001001a466b rb_yield + 507 (vm_eval.c:922)
+24  libruby.2.0.0.dylib           	0x0000000100009aee rb_ary_each + 78 (array.c:1677)
+25  libruby.2.0.0.dylib           	0x000000010018af59 vm_call_cfunc_with_frame + 761 (vm_insnhelper.c:1438)
+26  libruby.2.0.0.dylib           	0x00000001001a33cc vm_call_method + 828 (vm_insnhelper.c:1528)
+27  libruby.2.0.0.dylib           	0x000000010018efc3 vm_exec_core + 8547 (insns.def:1002)
+28  libruby.2.0.0.dylib           	0x0000000100195e91 vm_exec + 2737 (vm.c:1175)
+29  libruby.2.0.0.dylib           	0x00000001001971d4 vm_invoke_proc + 756 (vm.c:648)
+30  libruby.2.0.0.dylib           	0x0000000100197451 rb_vm_invoke_proc + 33 (vm.c:717)
+31  libruby.2.0.0.dylib           	0x00000001001b874b thread_start_func_2 + 1707 (thread.c:496)
+32  libruby.2.0.0.dylib           	0x00000001001b8981 thread_start_func_1 + 65 (thread_pthread.c:741)
+33  libSystem.B.dylib             	0x00007fff810c9fd6 _pthread_start + 331
+34  libSystem.B.dylib             	0x00007fff810c9e89 thread_start + 13
+
+Thread 3 crashed with X86 Thread State (64-bit):
+  rax: 0x000000000000003c  rbx: 0x00000001015e7960  rcx: 0x00000001015e7918  rdx: 0x0000000000000001
+  rdi: 0x0000000000000803  rsi: 0x0000000000000000  rbp: 0x00000001015e7950  rsp: 0x00000001015e7918
+   r8: 0x0000000000000000   r9: 0x0000000000989680  r10: 0x0000000000000001  r11: 0x0000000000000246
+  r12: 0x0000000000000000  r13: 0x0000000100264d18  r14: 0x0000000102687370  r15: 0xcccccccccccccccd
+  rip: 0x00007fff811039ce  rfl: 0x0000000000000247  cr2: 0x000000004c627090
+
+Binary Images:
+       0x100000000 -        0x100000fff +ruby ??? (???) <0AB8E64D-7443-377B-A460-6AFE935F22B8> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/bin/ruby
+       0x100003000 -        0x10025ffef +libruby.2.0.0.dylib 2.0.0 (compatibility 2.0.0) <002B171C-6B66-31AF-AA53-794603C3BAA3> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/libruby.2.0.0.dylib
+       0x100356000 -        0x100357ff7 +encdb.bundle ??? (???) <C48C0A4E-43A0-3A67-940A-D932C23DBE8E> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/encdb.bundle
+       0x10035a000 -        0x10035bff7 +transdb.bundle ??? (???) <420DAA1D-F821-3F5E-B6AC-DF98D1EDA017> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/trans/transdb.bundle
+       0x100380000 -        0x100384fff +psych.bundle ??? (???) <B5A2BF43-71F4-37F1-8248-E8F8BF14C4DD> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/psych.bundle
+       0x10038a000 -        0x1003a4fff +libyaml-0.2.dylib 3.2.0 (compatibility 3.0.0) <05F8DF7A-4B3F-3F61-9716-09A5EE78FF33> /usr/local/lib/libyaml-0.2.dylib
+       0x1003a9000 -        0x1003aefff +stringio.bundle ??? (???) <1E81BD87-64C1-35C5-AD17-94D04C29829E> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/stringio.bundle
+       0x1003b4000 -        0x1003b7fff +strscan.bundle ??? (???) <EA84A0F9-7EF5-3CCF-BF19-03F82B926624> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/strscan.bundle
+       0x1003bc000 -        0x1003bdff7 +etc.bundle ??? (???) <F58ECD4C-ECF3-3C59-B790-6AF5617FE9BA> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/etc.bundle
+       0x1003c1000 -        0x1003c6ff7 +pathname.bundle ??? (???) <CF8AF270-AD3C-33F8-B031-6327313E6D02> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/pathname.bundle
+       0x100700000 -        0x100736fff +date_core.bundle ??? (???) <16AC6829-3F1E-37DA-8D20-017F89D41BE9> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/date_core.bundle
+       0x100750000 -        0x100751fff +sha1.bundle ??? (???) <1F074429-7C8D-3124-BBD6-3EA95639E730> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/digest/sha1.bundle
+       0x100754000 -        0x100756ff7 +digest.bundle ??? (???) <9A036BFA-4AF5-3B85-8EE0-4078ADCCBD4A> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/digest.bundle
+       0x10075a000 -        0x100779ff7 +socket.bundle ??? (???) <4D4EB23E-70DF-38E1-BBD1-DFD636CFC26D> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/socket.bundle
+       0x100788000 -        0x100788ff7 +fcntl.bundle ??? (???) <1EAF0103-4481-3531-9A12-4089BD33B160> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/fcntl.bundle
+       0x10078b000 -        0x10078ffef +parser.bundle ??? (???) <05700B70-3E48-39F1-B764-9343B2D8AAED> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/json/ext/parser.bundle
+       0x100794000 -        0x100794fff +utf_16be.bundle ??? (???) <670D7510-A927-32D2-A7D0-47CD7A612030> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/utf_16be.bundle
+       0x100797000 -        0x100797fff +utf_16le.bundle ??? (???) <549888C5-7004-39AE-928C-9EED8AB411AD> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/utf_16le.bundle
+       0x10079a000 -        0x10079afff +utf_32be.bundle ??? (???) <54356056-D16D-3D7C-803E-F42952020EF6> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/utf_32be.bundle
+       0x10079d000 -        0x10079dfff +utf_32le.bundle ??? (???) <0458F370-1EB0-36B6-94A2-3802D9A26406> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/utf_32le.bundle
+       0x1007a0000 -        0x1007a6fef +generator.bundle ??? (???) <4C82CB0F-D323-3757-95AC-99FD5F763969> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/json/ext/generator.bundle
+       0x1007ac000 -        0x1007adff7 +md5.bundle ??? (???) <9435357C-70FB-35BA-B377-BC8321995078> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/digest/md5.bundle
+       0x1007b0000 -        0x1007bbfff +zlib.bundle ??? (???) <0BFCDD90-FE42-3A18-BBE2-AF606AA6D378> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/zlib.bundle
+       0x101e00000 -        0x101fbcfe7 +openssl.bundle ??? (???) <DD60C261-837B-3BC0-9FCC-EE941CD2B361> /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/openssl.bundle
+    0x7fff5fc00000 -     0x7fff5fc3bdef  dyld 132.1 (???) <69130DA3-7CB3-54C8-ABC5-423DECDD2AF7> /usr/lib/dyld
+    0x7fff809b3000 -     0x7fff809fffff  libauto.dylib ??? (???) <F7221B46-DC4F-3153-CE61-7F52C8C293CF> /usr/lib/libauto.dylib
+    0x7fff81090000 -     0x7fff81251fef  libSystem.B.dylib 125.2.11 (compatibility 1.0.0) <9AB4F1D1-89DC-0E8A-DC8E-A4FE4D69DB69> /usr/lib/libSystem.B.dylib
+    0x7fff825ac000 -     0x7fff82629fef  libstdc++.6.dylib 7.9.0 (compatibility 7.0.0) <9DBE8FD3-E42D-80C1-11AD-6500C32DBEBF> /usr/lib/libstdc++.6.dylib
+    0x7fff82c70000 -     0x7fff82c81ff7  libz.1.dylib 1.2.3 (compatibility 1.0.0) <97019C74-161A-3488-41EC-A6CA8738418C> /usr/lib/libz.1.dylib
+    0x7fff8436e000 -     0x7fff84372ff7  libmathCommon.A.dylib 315.0.0 (compatibility 1.0.0) <95718673-FEEE-B6ED-B127-BCDBDB60D4E5> /usr/lib/system/libmathCommon.A.dylib
+    0x7fff87aba000 -     0x7fff87b70ff7  libobjc.A.dylib 227.0.0 (compatibility 1.0.0) <03140531-3B2D-1EBA-DA7F-E12CC8F63969> /usr/lib/libobjc.A.dylib
+    0x7fffffe00000 -     0x7fffffe01fff  libSystem.B.dylib ??? (???) <9AB4F1D1-89DC-0E8A-DC8E-A4FE4D69DB69> /usr/lib/libSystem.B.dylib
+
