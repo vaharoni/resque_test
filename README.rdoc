@@ -2,7 +2,7 @@ This repository is meant to demonstrate segfault caused by resque-web.
 
 resque-web sometimes aborted unexpectedly for a project I'm working on. To debug the issue further, I mounted it to the web server, and got the stack trace attached below.
 
-See CrashReporter and DiagnosticReports for crash reports.
+See /CrashReporter and /DiagnosticReports for crash reports.
 
 == To reproduce the issue:
   $ bundle install
