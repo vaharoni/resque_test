@@ -1,0 +1,1302 @@
+This repository is meant to demonstrate segfault caused by resque-web.
+
+resque-web sometimes aborted unexpectedly for a project I'm working on. To debug the issue further, I mounted it to the web server, and got the stack trace attached below.
+
+== To reproduce the issue:
+Assuming your redis is at redis://localhost:6379/0 do one of the following:
+(1) Run resque-web and click on 'live-poll'. Come back in 10 minutes to get a 404.
+(2) Run `bundle exec rails s` and go to localhost:3000/resque. User: admin, Password: password. Click on 'live-poll'. Come back in 10 minutes to get the stack trace below.
+
+== Versions
+  OS: Mac OS X 10.6.8 build 10K549
+  ruby-2.0.0-p0
+  Redis version 2.6.12
+  resque 1.24.1
+  See Gemfile.lock for others
+
+== Changes from a new rails application
+  Gemfile 
+    Added 'resque' and 'redis' gems 
+
+  application.rb
+    Added /lib to autload_paths
+  
+  initializers
+    Added resque.rb
+  
+  lib
+    added secure_resque_server.rb
+  
+== Stack trace
+  Started GET "/resque/overview.poll" for 127.0.0.1 at 2013-04-21 17:44:01 -0700
+
+
+  Started GET "/resque/working.png" for 127.0.0.1 at 2013-04-21 17:44:01 -0700
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/converter.rb:134: [BUG] Segmentation fault
+  ruby 2.0.0p0 (2013-02-24 revision 39474) [x86_64-darwin10.8.0]
+
+  -- Crash Report log information --------------------------------------------
+     See Crash Report log file under the one of following:
+       * ~/Library/Logs/CrashReporter
+       * /Library/Logs/CrashReporter
+       * ~/Library/Logs/DiagnosticReports
+       * /Library/Logs/DiagnosticReports
+     the more detail of.
+
+  -- Control frame information -----------------------------------------------
+  c:0097 p:---- s:0555 e:000554 CFUNC  :begin
+  c:0096 p:0022 s:0551 e:000550 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/converter.rb:134 [FINISH]
+  c:0095 p:---- s:0538 e:000537 CFUNC  :scan
+  c:0094 p:0060 s:0534 e:000533 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/converter.rb:132
+  c:0093 p:0051 s:0524 e:000523 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/converter.rb:36
+  c:0092 p:0046 s:0519 e:000518 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/engine.rb:30 [FINISH]
+  c:0091 p:---- s:0514 e:000513 CFUNC  :new
+  c:0090 p:0112 s:0509 e:000508 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/erb.rb:89
+  c:0089 p:0148 s:0505 E:001828 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/template.rb:70 [FINISH]
+  c:0088 p:---- s:0498 e:000497 CFUNC  :new
+  c:0087 p:0217 s:0492 e:000491 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:749
+  c:0086 p:0020 s:0485 e:000481 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt.rb:127
+  c:0085 p:0025 s:0478 e:000477 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:728
+  c:0084 p:0249 s:0470 e:000469 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:710
+  c:0083 p:0023 s:0453 e:000452 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:597
+  c:0082 p:0046 s:0447 e:000446 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/server.rb:136
+  c:0081 p:0028 s:0442 e:000441 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/server.rb:145
+  c:0080 p:0009 s:0438 e:000437 LAMBDA /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/server.rb:155 [FINISH]
+  c:0079 p:---- s:0436 e:000435 CFUNC  :call
+  c:0078 p:0012 s:0433 e:000432 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:1293 [FINISH]
+  c:0077 p:---- s:0429 e:000428 CFUNC  :[]
+  c:0076 p:0011 s:0424 e:000423 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:860
+  c:0075 p:0009 s:0422 e:000419 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:876
+  c:0074 p:0007 s:0417 e:000416 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:860
+  c:0073 p:0029 s:0414 e:000413 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:897 [FINISH]
+  c:0072 p:---- s:0412 e:000411 CFUNC  :catch
+  c:0071 p:0134 s:0408 e:000407 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:895
+  c:0070 p:0013 s:0397 e:000396 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:859 [FINISH]
+  c:0069 p:---- s:0391 e:000390 CFUNC  :each
+  c:0068 p:0034 s:0388 e:000387 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:858
+  c:0067 p:0060 s:0382 e:000381 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:867
+  c:0066 p:0042 s:0376 e:000375 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:963
+  c:0065 p:0006 s:0374 e:000373 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:946 [FINISH]
+  c:0064 p:---- s:0372 e:000371 CFUNC  :catch
+  c:0063 p:0009 s:0368 e:000367 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:946
+  c:0062 p:0007 s:0364 e:000363 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:960
+  c:0061 p:0007 s:0360 e:000359 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:794
+  c:0060 p:0006 s:0358 e:000357 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:946 [FINISH]
+  c:0059 p:---- s:0356 e:000355 CFUNC  :catch
+  c:0058 p:0009 s:0352 e:000351 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:946
+  c:0057 p:0092 s:0348 e:000347 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:794
+  c:0056 p:0011 s:0344 e:000343 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:780
+  c:0055 p:0084 s:0340 e:000339 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/auth/basic.rb:25
+  c:0054 p:0011 s:0335 e:000334 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/xss_header.rb:18
+  c:0053 p:0047 s:0328 e:000327 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/path_traversal.rb:16
+  c:0052 p:0026 s:0323 e:000322 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/json_csrf.rb:18
+  c:0051 p:0051 s:0315 e:000314 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/base.rb:49
+  c:0050 p:0051 s:0310 e:000309 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/base.rb:49
+  c:0049 p:0011 s:0305 e:000304 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/frame_options.rb:31
+  c:0048 p:0021 s:0298 e:000297 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/nulllogger.rb:9
+  c:0047 p:0011 s:0294 e:000293 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/head.rb:9
+  c:0046 p:0011 s:0287 e:000286 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/showexceptions.rb:21
+  c:0045 p:0011 s:0279 e:000278 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:124
+  c:0044 p:0115 s:0273 e:000272 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/router.rb:68 [FINISH]
+  c:0043 p:---- s:0262 e:000261 CFUNC  :each
+  c:0042 p:0035 s:0259 e:000258 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/router.rb:56
+  c:0041 p:0017 s:0255 e:000254 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/routing/route_set.rb:612
+  c:0040 p:0011 s:0251 e:000250 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/best_standards_sup
+  c:0039 p:0011 s:0244 e:000243 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/etag.rb:23
+  c:0038 p:0050 s:0236 e:000235 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/conditionalget.rb:25
+  c:0037 p:0077 s:0229 e:000228 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/head.rb:14
+  c:0036 p:0034 s:0222 e:000221 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/params_parser.rb:2
+  c:0035 p:0046 s:0217 e:000216 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/flash.rb:242
+  c:0034 p:0023 s:0209 e:000208 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/session/abstract/id.rb:210
+  c:0033 p:0009 s:0201 e:000200 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/session/abstract/id.rb:205
+  c:0032 p:0016 s:0197 e:000196 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/cookies.rb:341
+  c:0031 p:0044 s:0189 e:000188 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/query_cache.rb:64
+  c:0030 p:0021 s:0180 e:000179 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/abstract/
+  c:0029 p:0011 s:0172 e:000171 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/callbacks.rb:28
+  c:0028 p:0035 s:0170 e:000169 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/callbacks.rb:405
+  c:0027 p:0090 s:0163 e:000162 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/callbacks.rb:405
+  c:0026 p:0019 s:0154 e:000153 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/callbacks.rb:385
+  c:0025 p:0020 s:0149 e:000148 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/callbacks.rb:81
+  c:0024 p:0009 s:0143 E:001b30 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/callbacks.rb:27
+  c:0023 p:0027 s:0139 e:000138 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/reloader.rb:65
+  c:0022 p:0032 s:0134 e:000133 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/remote_ip.rb:31
+  c:0021 p:0013 s:0130 e:000129 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/debug_exceptions.r
+  c:0020 p:0013 s:0123 e:000122 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/show_exceptions.rb
+  c:0019 p:0077 s:0117 e:000116 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack/logger.rb:32
+  c:0018 p:0011 s:0112 e:000111 BLOCK  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack/logger.rb:16
+  c:0017 p:0016 s:0110 e:000109 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/tagged_logging.rb:22
+  c:0016 p:0054 s:0105 e:000104 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack/logger.rb:16
+  c:0015 p:0032 s:0100 e:000099 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/request_id.rb:22
+  c:0014 p:0075 s:0093 e:000092 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/methodoverride.rb:21
+  c:0013 p:0024 s:0088 e:000087 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/runtime.rb:17
+  c:0012 p:0037 s:0079 e:000078 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/cache/strategy/local_cache.
+  c:0011 p:0056 s:0075 e:000074 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/lock.rb:15
+  c:0010 p:0094 s:0068 e:000067 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/static.rb:63
+  c:0009 p:0016 s:0062 e:000061 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/engine.rb:479
+  c:0008 p:0024 s:0058 e:000057 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/application.rb:223
+  c:0007 p:0011 s:0054 e:000053 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/content_length.rb:14
+  c:0006 p:0011 s:0045 e:000044 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack/log_tailer.rb:17
+  c:0005 p:0284 s:0040 e:000039 METHOD /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/handler/webrick.rb:59
+  c:0004 p:0185 s:0028 e:000027 METHOD /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpserver.rb:138
+  c:0003 p:0310 s:0018 e:000017 METHOD /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpserver.rb:94
+  c:0002 p:0089 s:0007 e:000006 BLOCK  /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/server.rb:295 [FINISH]
+  c:0001 p:---- s:0002 e:000001 TOP    [FINISH]
+
+  /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/server.rb:295:in `block in start_thread'
+  /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpserver.rb:94:in `run'
+  /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpserver.rb:138:in `service'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/handler/webrick.rb:59:in `service'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack/log_tailer.rb:17:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/content_length.rb:14:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/application.rb:223:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/engine.rb:479:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/static.rb:63:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/lock.rb:15:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/runtime.rb:17:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/methodoverride.rb:21:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack/logger.rb:16:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/tagged_logging.rb:22:in `tagged'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack/logger.rb:16:in `block in call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack/logger.rb:32:in `call_app'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/debug_exceptions.rb:16:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/remote_ip.rb:31:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/reloader.rb:65:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/callbacks.rb:27:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/callbacks.rb:81:in `run_callbacks'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/callbacks.rb:385:in `_run_call_callbacks'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/callbacks.rb:405:in `__run_callback'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/callbacks.rb:405:in `_run__437942532543425482__call__3864906965683761311__callbacks'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/callbacks.rb:28:in `block in call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/abstract/connection_pool.rb:479:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/query_cache.rb:64:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/cookies.rb:341:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/session/abstract/id.rb:205:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/session/abstract/id.rb:210:in `context'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/flash.rb:242:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/params_parser.rb:21:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/head.rb:14:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/conditionalget.rb:25:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/etag.rb:23:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/best_standards_support.rb:17:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/routing/route_set.rb:612:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/router.rb:56:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/router.rb:56:in `each'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/router.rb:68:in `block in call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:124:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/showexceptions.rb:21:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/head.rb:9:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/nulllogger.rb:9:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/frame_options.rb:31:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/base.rb:49:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/base.rb:49:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/json_csrf.rb:18:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/path_traversal.rb:16:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/xss_header.rb:18:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/auth/basic.rb:25:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:780:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:794:in `call!'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:946:in `invoke'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:946:in `catch'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:946:in `block in invoke'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:794:in `block in call!'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:960:in `dispatch!'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:946:in `invoke'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:946:in `catch'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:946:in `block in invoke'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:963:in `block in dispatch!'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:867:in `route!'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:858:in `route!'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:858:in `each'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:859:in `block in route!'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:895:in `process_route'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:895:in `catch'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:897:in `block in process_route'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:860:in `block (2 levels) in route!'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:876:in `route_eval'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:860:in `block (3 levels) in route!'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:860:in `[]'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:1293:in `block in compile!'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:1293:in `call'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/server.rb:155:in `block (2 levels) in <class:Server>'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/server.rb:145:in `show_for_polling'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/server.rb:136:in `show'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:597:in `erb'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:710:in `render'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:728:in `compile_template'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt.rb:127:in `fetch'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:749:in `block in compile_template'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb:749:in `new'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/template.rb:70:in `initialize'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/erb.rb:89:in `prepare'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/erb.rb:89:in `new'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/engine.rb:30:in `initialize'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/converter.rb:36:in `convert'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/converter.rb:132:in `convert_input'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/converter.rb:132:in `scan'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/converter.rb:134:in `block in convert_input'
+  /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/converter.rb:134:in `begin'
+
+  -- C level backtrace information -------------------------------------------
+
+  -- Other runtime information -----------------------------------------------
+
+  * Loaded script: script/rails
+
+  * Loaded features:
+
+      0 enumerator.so
+      1 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/encdb.bundle
+      2 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/trans/transdb.bundle
+      3 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/rbconfig.rb
+      4 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/compatibility.rb
+      5 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/defaults.rb
+      6 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/deprecate.rb
+      7 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/errors.rb
+      8 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/version.rb
+      9 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/requirement.rb
+     10 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/platform.rb
+     11 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/specification.rb
+     12 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/exceptions.rb
+     13 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_gem.rb
+     14 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/core_ext/kernel_require.rb
+     15 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems.rb
+     16 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/pathname.bundle
+     17 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/pathname.rb
+     18 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/user_interaction.rb
+     19 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/etc.bundle
+     20 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/config_file.rb
+     21 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/rubygems_integration.rb
+     22 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/dependency.rb
+     23 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/shared_helpers.rb
+     24 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/fileutils.rb
+     25 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/gem_path_manipulation.rb
+     26 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/gem_helpers.rb
+     27 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/match_platform.rb
+     28 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/rubygems_ext.rb
+     29 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/version.rb
+     30 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler.rb
+     31 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/settings.rb
+     32 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/path_support.rb
+     33 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/digest.bundle
+     34 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/digest.rb
+     35 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/digest/sha1.bundle
+     36 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/set.rb
+     37 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/definition.rb
+     38 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/dependency.rb
+     39 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/ruby_dsl.rb
+     40 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/dsl.rb
+     41 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/source.rb
+     42 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/uri/common.rb
+     43 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/uri/generic.rb
+     44 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/uri/ftp.rb
+     45 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/uri/http.rb
+     46 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/uri/https.rb
+     47 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/uri/ldap.rb
+     48 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/uri/ldaps.rb
+     49 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/uri/mailto.rb
+     50 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/uri.rb
+     51 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/socket.bundle
+     52 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/socket.rb
+     53 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/fcntl.bundle
+     54 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/timeout.rb
+     55 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/thread.rb
+     56 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/openssl.bundle
+     57 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/openssl/bn.rb
+     58 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/openssl/cipher.rb
+     59 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/stringio.bundle
+     60 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/openssl/config.rb
+     61 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/openssl/digest.rb
+     62 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/openssl/x509.rb
+     63 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/openssl/buffering.rb
+     64 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/openssl/ssl.rb
+     65 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/openssl.rb
+     66 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/securerandom.rb
+     67 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/resolv.rb
+     68 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/remote_fetcher.rb
+     69 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/text.rb
+     70 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/name_tuple.rb
+     71 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/site_ruby/2.0.0/rubygems/spec_fetcher.rb
+     72 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/source/rubygems.rb
+     73 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/strscan.bundle
+     74 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/source/path.rb
+     75 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/source/git.rb
+     76 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/lockfile_parser.rb
+     77 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/lazy_specification.rb
+     78 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/tsort.rb
+     79 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/forwardable.rb
+     80 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/spec_set.rb
+     81 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/environment.rb
+     82 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/runtime.rb
+     83 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/index.rb
+     84 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/remote_specification.rb
+     85 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/endpoint_specification.rb
+     86 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/dep_proxy.rb
+     87 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@global/gems/bundler-1.3.5/lib/bundler/setup.rb
+     88 /Users/AmitAharoni/workspace/resque_test/config/boot.rb
+     89 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/inclusion.rb
+     90 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/optparse.rb
+     91 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/inflector/inflections.rb
+     92 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/inflections.rb
+     93 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/inflector/methods.rb
+     94 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/lazy_load_hooks.rb
+     95 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/dependencies/autoload.rb
+     96 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/version.rb
+     97 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support.rb
+     98 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_pack/version.rb
+     99 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_pack.rb
+    100 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/version.rb
+    101 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/version.rb
+    102 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/exceptions.rb
+    103 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/interpolate/ruby.rb
+    104 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n.rb
+    105 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/config.rb
+    106 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/i18n.rb
+    107 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model.rb
+    108 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack.rb
+    109 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch.rb
+    110 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/server.rb
+    111 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/commands/server.rb
+    112 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/ruby_version_check.rb
+    113 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/kernel/reporting.rb
+    114 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/array/extract_options.rb
+    115 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/class/attribute_accessors.rb
+    116 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/notifications/fanout.rb
+    117 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/notifications.rb
+    118 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/array/wrap.rb
+    119 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/deprecation/behaviors.rb
+    120 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/deprecation/reporting.rb
+    121 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/deprecation.rb
+    122 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/aliasing.rb
+    123 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/deprecation/method_wrappers.rb
+    124 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/deprecation/proxy_wrappers.rb
+    125 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/deprecation.rb
+    126 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/monitor.rb
+    127 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/logger.rb
+    128 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/logger.rb
+    129 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/hash/reverse_merge.rb
+    130 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/initializable.rb
+    131 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/syntax_error.rb
+    132 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/psych.bundle
+    133 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/nodes/node.rb
+    134 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/nodes/stream.rb
+    135 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/nodes/document.rb
+    136 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/nodes/sequence.rb
+    137 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/nodes/scalar.rb
+    138 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/nodes/mapping.rb
+    139 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/nodes/alias.rb
+    140 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/nodes.rb
+    141 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/streaming.rb
+    142 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/visitors/visitor.rb
+    143 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/scalar_scanner.rb
+    144 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/visitors/to_ruby.rb
+    145 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/visitors/emitter.rb
+    146 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/visitors/yaml_tree.rb
+    147 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/json/ruby_events.rb
+    148 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/visitors/json_tree.rb
+    149 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/visitors/depth_first.rb
+    150 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/visitors.rb
+    151 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/handler.rb
+    152 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/tree_builder.rb
+    153 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/parser.rb
+    154 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/omap.rb
+    155 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/set.rb
+    156 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/coder.rb
+    157 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/core_ext.rb
+    158 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/date_core.bundle
+    159 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/date/format.rb
+    160 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/date.rb
+    161 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/deprecated.rb
+    162 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/stream.rb
+    163 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/json/yaml_events.rb
+    164 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/json/tree_builder.rb
+    165 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/json/stream.rb
+    166 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych/handlers/document_stream.rb
+    167 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/psych.rb
+    168 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/yaml.rb
+    169 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/ordered_hash.rb
+    170 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/ordered_options.rb
+    171 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/hash/deep_dup.rb
+    172 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/paths.rb
+    173 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack.rb
+    174 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/configuration.rb
+    175 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/attribute_accessors.rb
+    176 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/multibyte/utils.rb
+    177 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/multibyte.rb
+    178 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/multibyte.rb
+    179 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/inflector/transliterate.rb
+    180 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/inflections.rb
+    181 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/inflector.rb
+    182 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/introspection.rb
+    183 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/delegation.rb
+    184 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/railtie.rb
+    185 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/engine/railties.rb
+    186 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/engine.rb
+    187 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/time.rb
+    188 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/base64.rb
+    189 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/base64.rb
+    190 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/encoding.rb
+    191 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/blank.rb
+    192 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/xml_mini/rexml.rb
+    193 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/xml_mini.rb
+    194 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/hash/keys.rb
+    195 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/array/conversions.rb
+    196 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/plugin.rb
+    197 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/application.rb
+    198 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/version.rb
+    199 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/file_update_checker.rb
+    200 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/concern.rb
+    201 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/railtie/configurable.rb
+    202 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/railtie/configuration.rb
+    203 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/i18n_railtie.rb
+    204 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/railtie.rb
+    205 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/railtie.rb
+    206 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails.rb
+    207 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/crud.rb
+    208 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/factory_methods.rb
+    209 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/expressions.rb
+    210 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/predications.rb
+    211 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/math.rb
+    212 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/alias_predication.rb
+    213 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/order_predications.rb
+    214 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/table.rb
+    215 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/attributes/attribute.rb
+    216 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/attributes.rb
+    217 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/compatibility/wheres.rb
+    218 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/relation.rb
+    219 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/expression.rb
+    220 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/visitor.rb
+    221 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/depth_first.rb
+    222 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/bigdecimal.bundle
+    223 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/to_sql.rb
+    224 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/sqlite.rb
+    225 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/postgresql.rb
+    226 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/mysql.rb
+    227 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/mssql.rb
+    228 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/oracle.rb
+    229 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/join_sql.rb
+    230 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/where_sql.rb
+    231 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/order_clauses.rb
+    232 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/dot.rb
+    233 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/ibm_db.rb
+    234 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/informix.rb
+    235 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors.rb
+    236 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/tree_manager.rb
+    237 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/insert_manager.rb
+    238 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/select_manager.rb
+    239 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/update_manager.rb
+    240 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/delete_manager.rb
+    241 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/node.rb
+    242 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/select_statement.rb
+    243 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/select_core.rb
+    244 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/insert_statement.rb
+    245 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/update_statement.rb
+    246 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/terminal.rb
+    247 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/true.rb
+    248 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/false.rb
+    249 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/unary.rb
+    250 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/ascending.rb
+    251 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/descending.rb
+    252 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/unqualified_column.rb
+    253 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/with.rb
+    254 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/binary.rb
+    255 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/equality.rb
+    256 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/in.rb
+    257 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/join_source.rb
+    258 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/delete_statement.rb
+    259 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/table_alias.rb
+    260 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/infix_operation.rb
+    261 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/and.rb
+    262 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/function.rb
+    263 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/count.rb
+    264 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/values.rb
+    265 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/named_function.rb
+    266 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/inner_join.rb
+    267 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/outer_join.rb
+    268 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/string_join.rb
+    269 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes/sql_literal.rb
+    270 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/nodes.rb
+    271 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/deprecated.rb
+    272 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/sql/engine.rb
+    273 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/sql_literal.rb
+    274 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel.rb
+    275 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/version.rb
+    276 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/enumerable.rb
+    277 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/kernel/singleton_class.rb
+    278 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/remove_method.rb
+    279 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/class/attribute.rb
+    280 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/attribute_methods.rb
+    281 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_methods.rb
+    282 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/bigdecimal/util.rb
+    283 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/benchmark.rb
+    284 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/benchmark.rb
+    285 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/schema_cache.rb
+    286 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/big_decimal/conversions.rb
+    287 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/abstract/quoting.rb
+    288 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/abstract/database_statements.rb
+    289 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/abstract/schema_statements.rb
+    290 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/abstract/database_limits.rb
+    291 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/abstract/query_cache.rb
+    292 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/descendants_tracker.rb
+    293 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/callbacks.rb
+    294 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/abstract_adapter.rb
+    295 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/scoping.rb
+    296 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record.rb
+    297 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/railtie.rb
+    298 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/basic_object.rb
+    299 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/acts_like.rb
+    300 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/duration.rb
+    301 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/try.rb
+    302 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/values/time_zone.rb
+    303 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/time_with_zone.rb
+    304 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/time/zones.rb
+    305 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/date/zones.rb
+    306 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/date/calculations.rb
+    307 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/time/publicize_conversion_methods.rb
+    308 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/time/conversions.rb
+    309 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/date_time/calculations.rb
+    310 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/date_time/conversions.rb
+    311 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/process/daemon.rb
+    312 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/time/calculations.rb
+    313 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/conversions.rb
+    314 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/core_ext/string/interpolate.rb
+    315 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/interpolation.rb
+    316 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/rexml/rexml.rb
+    317 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/rexml.rb
+    318 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/file/path.rb
+    319 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/method_names.rb
+    320 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/ruby/shim.rb
+    321 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/attr_internal.rb
+    322 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/anonymous.rb
+    323 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller.rb
+    324 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/cgi/util.rb
+    325 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/erb.rb
+    326 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/output_safety.rb
+    327 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view.rb
+    328 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/vendor/html-scanner.rb
+    329 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/load_error.rb
+    330 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/name_error.rb
+    331 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/uri.rb
+    332 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller.rb
+    333 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/railtie.rb
+    334 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/railties/routes_helpers.rb
+    335 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/railties/paths.rb
+    336 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/railtie.rb
+    337 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/railtie.rb
+    338 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionmailer-3.2.13/lib/action_mailer/version.rb
+    339 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/class/delegating_attributes.rb
+    340 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/reachable.rb
+    341 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/class/subclasses.rb
+    342 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/class.rb
+    343 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/array/uniq_by.rb
+    344 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionmailer-3.2.13/lib/action_mailer.rb
+    345 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionmailer-3.2.13/lib/action_mailer/railtie.rb
+    346 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activeresource-3.2.13/lib/active_resource/exceptions.rb
+    347 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activeresource-3.2.13/lib/active_resource/version.rb
+    348 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activeresource-3.2.13/lib/active_resource.rb
+    349 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activeresource-3.2.13/lib/active_resource/railtie.rb
+    350 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/test_unit/railtie.rb
+    351 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/sprockets/railtie.rb
+    352 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/all.rb
+    353 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/string_inquirer.rb
+    354 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3/sqlite3_native.bundle
+    355 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3/constants.rb
+    356 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3/errors.rb
+    357 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3/pragmas.rb
+    358 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3/resultset.rb
+    359 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3/statement.rb
+    360 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3/translator.rb
+    361 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3/value.rb
+    362 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3/database.rb
+    363 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3/version.rb
+    364 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sqlite3-1.3.7/lib/sqlite3.rb
+    365 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-3.0.3/lib/redis/errors.rb
+    366 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-3.0.3/lib/redis/version.rb
+    367 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-3.0.3/lib/redis/connection/registry.rb
+    368 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-3.0.3/lib/redis/connection/command_helper.rb
+    369 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-3.0.3/lib/redis/connection/ruby.rb
+    370 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-3.0.3/lib/redis/connection.rb
+    371 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/cgi/core.rb
+    372 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/cgi/cookie.rb
+    373 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/cgi.rb
+    374 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-3.0.3/lib/redis/client.rb
+    375 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-3.0.3/lib/redis/pipeline.rb
+    376 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-3.0.3/lib/redis/subscribe.rb
+    377 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-3.0.3/lib/redis.rb
+    378 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/mono_logger-1.0.1/lib/mono_logger/version.rb
+    379 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/mono_logger-1.0.1/lib/mono_logger.rb
+    380 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/redis-namespace-1.2.1/lib/redis/namespace.rb
+    381 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/version.rb
+    382 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/errors.rb
+    383 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/failure.rb
+    384 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/failure/base.rb
+    385 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/multi_json-1.7.2/lib/multi_json/options.rb
+    386 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/multi_json-1.7.2/lib/multi_json/version.rb
+    387 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/multi_json-1.7.2/lib/multi_json.rb
+    388 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/json/version.rb
+    389 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/ostruct.rb
+    390 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/json/generic_object.rb
+    391 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/json/common.rb
+    392 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/utf_16be.bundle
+    393 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/utf_16le.bundle
+    394 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/utf_32be.bundle
+    395 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/utf_32le.bundle
+    396 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/json/ext/parser.bundle
+    397 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/json/ext/generator.bundle
+    398 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/json/ext.rb
+    399 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/json.rb
+    400 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/singleton.rb
+    401 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/multi_json-1.7.2/lib/multi_json/adapter.rb
+    402 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/multi_json-1.7.2/lib/multi_json/adapters/json_common.rb
+    403 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/multi_json-1.7.2/lib/multi_json/adapters/json_gem.rb
+    404 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/helpers.rb
+    405 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/stat.rb
+    406 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/logging.rb
+    407 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/log_formatters/quiet_formatter.rb
+    408 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/log_formatters/verbose_formatter.rb
+    409 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/log_formatters/very_verbose_formatter.rb
+    410 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/job.rb
+    411 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/worker.rb
+    412 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/plugin.rb
+    413 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/vendor/utf8_util/utf8_util_19.rb
+    414 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/vendor/utf8_util.rb
+    415 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque.rb
+    416 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-rails-3.2.6/lib/sass/rails/version.rb
+    417 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-rails-3.2.6/lib/sass/rails/helpers.rb
+    418 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/logger/log_level.rb
+    419 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/logger/base.rb
+    420 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/logger.rb
+    421 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-rails-3.2.6/lib/sass/rails/logger.rb
+    422 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-rails-3.2.6/lib/sass/rails/railtie.rb
+    423 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-rails-3.2.6/lib/sass/rails.rb
+    424 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-rails-3.2.6/lib/sass-rails.rb
+    425 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/version.rb
+    426 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/module.rb
+    427 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/encoding.rb
+    428 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/runtime.rb
+    429 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/disabled_runtime.rb
+    430 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/shellwords.rb
+    431 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/delegate.rb
+    432 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/tmpdir.rb
+    433 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/tempfile.rb
+    434 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/external_runtime.rb
+    435 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/johnson_runtime.rb
+    436 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/mustang_runtime.rb
+    437 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/ruby_racer_runtime.rb
+    438 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/ruby_rhino_runtime.rb
+    439 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/runtimes.rb
+    440 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs/json.rb
+    441 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/execjs-1.4.0/lib/execjs.rb
+    442 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/coffee-script-source-1.6.2/lib/coffee_script/source.rb
+    443 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/coffee-script-2.2.0/lib/coffee_script.rb
+    444 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/coffee-script-2.2.0/lib/coffee-script.rb
+    445 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/engine/configuration.rb
+    446 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/coffee-rails-3.2.2/lib/coffee/rails/engine.rb
+    447 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/coffee-rails-3.2.2/lib/coffee/rails/template_handler.rb
+    448 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/coffee-rails-3.2.2/lib/coffee/rails/version.rb
+    449 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/coffee-rails-3.2.2/lib/coffee-rails.rb
+    450 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/uglifier-2.0.1/lib/uglifier.rb
+    451 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/jquery-rails-2.2.1/lib/jquery/rails/engine.rb
+    452 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/jquery-rails-2.2.1/lib/jquery/rails/railtie.rb
+    453 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/jquery-rails-2.2.1/lib/jquery/rails/version.rb
+    454 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/jquery-rails-2.2.1/lib/jquery/rails.rb
+    455 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/jquery-rails-2.2.1/lib/jquery-rails.rb
+    456 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/application/configuration.rb
+    457 /Users/AmitAharoni/workspace/resque_test/config/application.rb
+    458 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/handler.rb
+    459 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/compat.rb
+    460 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/version.rb
+    461 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpversion.rb
+    462 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httputils.rb
+    463 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/utils.rb
+    464 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/log.rb
+    465 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/config.rb
+    466 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/server.rb
+    467 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/accesslog.rb
+    468 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/htmlutils.rb
+    469 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/cookie.rb
+    470 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpstatus.rb
+    471 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httprequest.rb
+    472 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpresponse.rb
+    473 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpservlet/abstract.rb
+    474 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpservlet/filehandler.rb
+    475 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpservlet/cgihandler.rb
+    476 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpservlet/erbhandler.rb
+    477 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpservlet/prochandler.rb
+    478 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpservlet.rb
+    479 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpserver.rb
+    480 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpauth/authenticator.rb
+    481 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpauth/basicauth.rb
+    482 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/digest/md5.bundle
+    483 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpauth/digestauth.rb
+    484 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpauth/userdb.rb
+    485 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpauth/htpasswd.rb
+    486 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpauth/htdigest.rb
+    487 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpauth/htgroup.rb
+    488 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick/httpauth.rb
+    489 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/webrick.rb
+    490 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/multipart.rb
+    491 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/utils.rb
+    492 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/content_length.rb
+    493 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/handler/webrick.rb
+    494 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/builder.rb
+    495 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/qualified_const.rb
+    496 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/starts_ends_with.rb
+    497 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/dependencies.rb
+    498 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/application/bootstrap.rb
+    499 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/application/railties.rb
+    500 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/application/finisher.rb
+    501 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/application/routes_reloader.rb
+    502 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/to_param.rb
+    503 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/regexp.rb
+    504 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/routing/polymorphic_routes.rb
+    505 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/routing.rb
+    506 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/core-ext/hash.rb
+    507 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/router/utils.rb
+    508 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/router/strexp.rb
+    509 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/routes.rb
+    510 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/formatter.rb
+    511 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/racc/cparse.bundle
+    512 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/racc/parser.rb
+    513 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/scanner.rb
+    514 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/visitors.rb
+    515 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/nodes/node.rb
+    516 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/parser_extras.rb
+    517 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/parser.rb
+    518 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/route.rb
+    519 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/path/pattern.rb
+    520 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/router.rb
+    521 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/nfa/dot.rb
+    522 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/gtg/transition_table.rb
+    523 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/gtg/builder.rb
+    524 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/gtg/simulator.rb
+    525 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/nfa/transition_table.rb
+    526 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/nfa/builder.rb
+    527 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey/nfa/simulator.rb
+    528 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/journey-1.0.4/lib/journey.rb
+    529 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/to_query.rb
+    530 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/hash/slice.rb
+    531 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/exceptions.rb
+    532 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/routing/route_set.rb
+    533 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/hash_with_indifferent_access.rb
+    534 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/hash/indifferent_access.rb
+    535 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/access.rb
+    536 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/headers.rb
+    537 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/request.rb
+    538 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/cache.rb
+    539 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/mime_negotiation.rb
+    540 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/parameters.rb
+    541 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/duplicable.rb
+    542 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/filter_parameters.rb
+    543 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/upload.rb
+    544 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/url.rb
+    545 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/request.rb
+    546 /Users/AmitAharoni/workspace/resque_test/config/environments/development.rb
+    547 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/time/marshal.rb
+    548 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/time/acts_like.rb
+    549 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/date/acts_like.rb
+    550 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/date/freeze.rb
+    551 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/date/conversions.rb
+    552 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/date_time/acts_like.rb
+    553 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/date_time/zones.rb
+    554 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/integer/time.rb
+    555 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/numeric/time.rb
+    556 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/time.rb
+    557 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/array/access.rb
+    558 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/array/grouping.rb
+    559 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/array/random_access.rb
+    560 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/array/prepend_and_append.rb
+    561 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/array.rb
+    562 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/big_decimal.rb
+    563 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/exception.rb
+    564 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/file/atomic.rb
+    565 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/file.rb
+    566 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/float/rounding.rb
+    567 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/float.rb
+    568 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/hash/conversions.rb
+    569 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/hash/deep_merge.rb
+    570 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/hash/diff.rb
+    571 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/hash/except.rb
+    572 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/hash.rb
+    573 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/integer/multiple.rb
+    574 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/integer/inflections.rb
+    575 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/integer.rb
+    576 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/io.rb
+    577 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/kernel/agnostics.rb
+    578 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/kernel/debugger.rb
+    579 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/kernel.rb
+    580 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module/synchronization.rb
+    581 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/module.rb
+    582 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/numeric/bytes.rb
+    583 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/numeric.rb
+    584 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/conversions.rb
+    585 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/instance_variables.rb
+    586 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/to_json.rb
+    587 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/option_merger.rb
+    588 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object/with_options.rb
+    589 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/object.rb
+    590 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/proc.rb
+    591 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/process.rb
+    592 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/range/blockless_step.rb
+    593 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/range/conversions.rb
+    594 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/range/include_range.rb
+    595 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/range/overlaps.rb
+    596 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/range/cover.rb
+    597 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/range.rb
+    598 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/filters.rb
+    599 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/xchar.rb
+    600 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/behavior.rb
+    601 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/exclude.rb
+    602 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/strip.rb
+    603 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string/inquiry.rb
+    604 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext/string.rb
+    605 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/core_ext.rb
+    606 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/all.rb
+    607 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/tagged_logging.rb
+    608 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/buffered_logger.rb
+    609 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/zlib.bundle
+    610 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/cache.rb
+    611 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/cache/file_store.rb
+    612 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/cache/strategy/local_cache.rb
+    613 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/root.rb
+    614 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/util/subset_map.rb
+    615 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/util/multibyte_string_scanner.rb
+    616 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/util.rb
+    617 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/version.rb
+    618 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/cache_stores/base.rb
+    619 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/cache_stores/filesystem.rb
+    620 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/cache_stores/memory.rb
+    621 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/cache_stores/chain.rb
+    622 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/cache_stores.rb
+    623 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/node.rb
+    624 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/root_node.rb
+    625 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/rule_node.rb
+    626 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/comment_node.rb
+    627 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/prop_node.rb
+    628 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/directive_node.rb
+    629 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/media_node.rb
+    630 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/supports_node.rb
+    631 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/css_import_node.rb
+    632 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/variable_node.rb
+    633 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/mixin_def_node.rb
+    634 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/mixin_node.rb
+    635 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/trace_node.rb
+    636 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/content_node.rb
+    637 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/function_node.rb
+    638 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/return_node.rb
+    639 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/extend_node.rb
+    640 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/if_node.rb
+    641 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/while_node.rb
+    642 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/for_node.rb
+    643 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/each_node.rb
+    644 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/debug_node.rb
+    645 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/warn_node.rb
+    646 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/import_node.rb
+    647 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/charset_node.rb
+    648 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb
+    649 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb
+    650 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/visitors/cssize.rb
+    651 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/visitors/extend.rb
+    652 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/visitors/convert.rb
+    653 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/visitors/to_css.rb
+    654 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/visitors/deep_copy.rb
+    655 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/visitors/set_options.rb
+    656 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/tree/visitors/check_nesting.rb
+    657 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/selector/simple.rb
+    658 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/selector/abstract_sequence.rb
+    659 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/selector/comma_sequence.rb
+    660 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/selector/sequence.rb
+    661 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/selector/simple_sequence.rb
+    662 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/selector.rb
+    663 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/environment.rb
+    664 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/node.rb
+    665 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/variable.rb
+    666 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/functions.rb
+    667 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/funcall.rb
+    668 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/number.rb
+    669 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/color.rb
+    670 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/bool.rb
+    671 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/null.rb
+    672 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/list.rb
+    673 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/arg_list.rb
+    674 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/literal.rb
+    675 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/string.rb
+    676 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/unary_operation.rb
+    677 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/interpolation.rb
+    678 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/string_interpolation.rb
+    679 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/operation.rb
+    680 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/scss/rx.rb
+    681 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/lexer.rb
+    682 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/parser.rb
+    683 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script.rb
+    684 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/scss/script_lexer.rb
+    685 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/scss/script_parser.rb
+    686 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/scss/parser.rb
+    687 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/css_lexer.rb
+    688 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/script/css_parser.rb
+    689 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/scss/static_parser.rb
+    690 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/scss/css_parser.rb
+    691 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/scss.rb
+    692 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/error.rb
+    693 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/importers/base.rb
+    694 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/importers/filesystem.rb
+    695 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/importers.rb
+    696 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/shared.rb
+    697 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/media.rb
+    698 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/supports.rb
+    699 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/engine.rb
+    700 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass/railtie.rb
+    701 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-3.2.7/lib/sass.rb
+    702 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/version.rb
+    703 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/template.rb
+    704 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/string.rb
+    705 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/erb.rb
+    706 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/etanni.rb
+    707 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/haml.rb
+    708 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/css.rb
+    709 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/csv.rb
+    710 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/coffee.rb
+    711 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/nokogiri.rb
+    712 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/builder.rb
+    713 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/markaby.rb
+    714 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/liquid.rb
+    715 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/radius.rb
+    716 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/markdown.rb
+    717 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/textile.rb
+    718 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/rdoc.rb
+    719 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/wiki.rb
+    720 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/yajl.rb
+    721 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/asciidoc.rb
+    722 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt/plain.rb
+    723 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tilt-1.3.7/lib/tilt.rb
+    724 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/eco_template.rb
+    725 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/ejs_template.rb
+    726 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/jst_processor.rb
+    727 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/utils.rb
+    728 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/engines.rb
+    729 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets.rb
+    730 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sass-rails-3.2.6/lib/sass/rails/template_handlers.rb
+    731 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/body_proxy.rb
+    732 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/reloader.rb
+    733 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/whiny_nil.rb
+    734 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/ruby_core_support.rb
+    735 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/offset_rationals.rb
+    736 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/time_or_datetime.rb
+    737 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/timezone_definition.rb
+    738 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/timezone_offset_info.rb
+    739 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/timezone_transition_info.rb
+    740 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/timezone_index_definition.rb
+    741 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/timezone_info.rb
+    742 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/data_timezone_info.rb
+    743 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/linked_timezone_info.rb
+    744 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/timezone_period.rb
+    745 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/timezone.rb
+    746 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/info_timezone.rb
+    747 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/data_timezone.rb
+    748 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/linked_timezone.rb
+    749 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/timezone_proxy.rb
+    750 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/country_index_definition.rb
+    751 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/country_info.rb
+    752 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/country.rb
+    753 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo/country_timezone.rb
+    754 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/tzinfo-0.3.37/lib/tzinfo.rb
+    755 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/response.rb
+    756 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/response.rb
+    757 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/exception_wrapper.rb
+    758 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/cookies.rb
+    759 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/benchmarkable.rb
+    760 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/errors.rb
+    761 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/log_subscriber.rb
+    762 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/log_subscriber.rb
+    763 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/explain_subscriber.rb
+    764 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/persistence.rb
+    765 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/naming.rb
+    766 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/query_cache.rb
+    767 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/querying.rb
+    768 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/readonly_attributes.rb
+    769 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/model_schema.rb
+    770 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/translation.rb
+    771 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/translation.rb
+    772 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/inheritance.rb
+    773 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/scoping/default.rb
+    774 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/scoping/named.rb
+    775 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/dynamic_matchers.rb
+    776 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/sanitization.rb
+    777 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/mass_assignment_security/permission_set.rb
+    778 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/mass_assignment_security/sanitizer.rb
+    779 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/mass_assignment_security.rb
+    780 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_assignment.rb
+    781 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/conversion.rb
+    782 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/integration.rb
+    783 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/errors.rb
+    784 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/callbacks.rb
+    785 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validator.rb
+    786 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/acceptance.rb
+    787 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/confirmation.rb
+    788 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/exclusion.rb
+    789 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/format.rb
+    790 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/inclusion.rb
+    791 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/length.rb
+    792 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/numericality.rb
+    793 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/presence.rb
+    794 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/validates.rb
+    795 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations/with.rb
+    796 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/validations.rb
+    797 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/validations/associated.rb
+    798 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/validations/uniqueness.rb
+    799 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/validations.rb
+    800 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/counter_cache.rb
+    801 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/locking/optimistic.rb
+    802 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/locking/pessimistic.rb
+    803 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_methods/read.rb
+    804 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_methods/write.rb
+    805 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_methods/before_type_cast.rb
+    806 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_methods/query.rb
+    807 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_methods/primary_key.rb
+    808 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_methods/time_zone_conversion.rb
+    809 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/dirty.rb
+    810 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_methods/dirty.rb
+    811 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/timestamp.rb
+    812 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_methods/serialization.rb
+    813 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/attribute_methods/deprecated_underscore_read.rb
+    814 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/callbacks.rb
+    815 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/observer_array.rb
+    816 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/observing.rb
+    817 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/callbacks.rb
+    818 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/associations.rb
+    819 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/identity_map.rb
+    820 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/secure_password.rb
+    821 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/explain.rb
+    822 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/autosave_association.rb
+    823 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/nested_attributes.rb
+    824 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/associations/builder/association.rb
+    825 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/associations/builder/singular_association.rb
+    826 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/associations/builder/has_one.rb
+    827 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/associations/builder/collection_association.rb
+    828 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/associations/builder/has_many.rb
+    829 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/associations/builder/belongs_to.rb
+    830 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/associations/builder/has_and_belongs_to_many.rb
+    831 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/aggregations.rb
+    832 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/transactions.rb
+    833 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/reflection.rb
+    834 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/json/decoding.rb
+    835 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/json/variable.rb
+    836 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/json/encoding.rb
+    837 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/json.rb
+    838 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/serialization.rb
+    839 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/serializers/json.rb
+    840 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activemodel-3.2.13/lib/active_model/serializers/xml.rb
+    841 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/serializers/xml_serializer.rb
+    842 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/serialization.rb
+    843 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/store.rb
+    844 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/abstract/connection_pool.rb
+    845 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/abstract/connection_specification.rb
+    846 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/statement_pool.rb
+    847 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/arel-3.0.2/lib/arel/visitors/bind_visitor.rb
+    848 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/column.rb
+    849 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/sqlite_adapter.rb
+    850 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/connection_adapters/sqlite3_adapter.rb
+    851 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/dynamic_finder_match.rb
+    852 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/dynamic_scope_match.rb
+    853 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/base.rb
+    854 /Users/AmitAharoni/.rvm/rubies/ruby-2.0.0-p0/lib/ruby/2.0.0/x86_64-darwin10.8.0/enc/trans/single_byte.bundle
+    855 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/notifications/instrumenter.rb
+    856 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/railties/controller_runtime.rb
+    857 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/asset_attributes.rb
+    858 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/asset.rb
+    859 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/errors.rb
+    860 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/bundled_asset.rb
+    861 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/caching.rb
+    862 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/processed_asset.rb
+    863 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/mime.rb
+    864 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/mime.rb
+    865 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/processor.rb
+    866 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/processing.rb
+    867 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/server.rb
+    868 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/static_asset.rb
+    869 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/trail.rb
+    870 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/base.rb
+    871 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/charset_normalizer.rb
+    872 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/context.rb
+    873 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/directive_processor.rb
+    874 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/index.rb
+    875 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/safety_colons.rb
+    876 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/hike-1.2.2/lib/hike.rb
+    877 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sprockets-2.2.2/lib/sprockets/environment.rb
+    878 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/hike-1.2.2/lib/hike/normalized_array.rb
+    879 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/hike-1.2.2/lib/hike/extensions.rb
+    880 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/hike-1.2.2/lib/hike/index.rb
+    881 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/hike-1.2.2/lib/hike/paths.rb
+    882 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/hike-1.2.2/lib/hike/trail.rb
+    883 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/version.rb
+    884 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection.rb
+    885 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/showexceptions.rb
+    886 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/showexceptions.rb
+    887 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/version.rb
+    888 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/body_proxy.rb
+    889 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/commonlogger.rb
+    890 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/sinatra-1.3.6/lib/sinatra/base.rb
+    891 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/server/helpers.rb
+    892 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/server.rb
+    893 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/stack.rb
+    894 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/static.rb
+    895 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/lock.rb
+    896 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/runtime.rb
+    897 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/methodoverride.rb
+    898 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/request_id.rb
+    899 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack/logger.rb
+    900 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/show_exceptions.rb
+    901 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/public_exceptions.rb
+    902 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/debug_exceptions.rb
+    903 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/remote_ip.rb
+    904 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/callbacks.rb
+    905 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/session/abstract/id.rb
+    906 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/session/abstract_store.rb
+    907 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/session/cookie.rb
+    908 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/session/cookie_store.rb
+    909 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/flash.rb
+    910 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/mime_types.rb
+    911 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/http/mime_type.rb
+    912 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/params_parser.rb
+    913 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/head.rb
+    914 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/conditionalget.rb
+    915 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/etag.rb
+    916 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/middleware/best_standards_support.rb
+    917 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/file.rb
+    918 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/backend.rb
+    919 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/core_ext/hash.rb
+    920 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/core_ext/kernel/surpress_warnings.rb
+    921 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/backend/transliterator.rb
+    922 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/backend/base.rb
+    923 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/i18n-0.6.1/lib/i18n/backend/simple.rb
+    924 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/sprockets/bootstrap.rb
+    925 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/routing/redirection.rb
+    926 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/routing/mapper.rb
+    927 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/auth/abstract/handler.rb
+    928 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/auth/abstract/request.rb
+    929 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/auth/basic.rb
+    930 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/head.rb
+    931 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/nulllogger.rb
+    932 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/base.rb
+    933 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/frame_options.rb
+    934 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/http_origin.rb
+    935 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/ip_spoofing.rb
+    936 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/json_csrf.rb
+    937 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/path_traversal.rb
+    938 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-protection-1.5.0/lib/rack/protection/xss_header.rb
+    939 /Users/AmitAharoni/workspace/resque_test/config/environment.rb
+    940 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/rack/log_tailer.rb
+    941 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/backtrace_cleaner.rb
+    942 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/railties-3.2.13/lib/rails/backtrace_cleaner.rb
+    943 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/log_subscriber.rb
+    944 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/util.rb
+    945 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/generator.rb
+    946 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/converter.rb
+    947 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/error.rb
+    948 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/context.rb
+    949 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/evaluator.rb
+    950 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/engine.rb
+    951 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/helper.rb
+    952 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/enhancer.rb
+    953 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/engine/eruby.rb
+    954 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis/local-setting.rb
+    955 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/erubis-2.7.0/lib/erubis.rb
+    956 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/configurable.rb
+    957 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/base.rb
+    958 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal.rb
+    959 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/log_subscriber.rb
+    960 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/active_model_helper.rb
+    961 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/capture_helper.rb
+    962 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/tag_helper.rb
+    963 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/asset_tag_helpers/asset_include_tag.rb
+    964 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/asset_tag_helpers/javascript_tag_helpers.rb
+    965 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/asset_tag_helpers/stylesheet_tag_helpers.rb
+    966 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/asset_paths.rb
+    967 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/asset_tag_helpers/asset_paths.rb
+    968 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/asset_tag_helper.rb
+    969 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/atom_feed_helper.rb
+    970 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/cache_helper.rb
+    971 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/controller_helper.rb
+    972 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/csrf_helper.rb
+    973 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/date_helper.rb
+    974 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/debug_helper.rb
+    975 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/javascript_helper.rb
+    976 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_dispatch/routing/url_for.rb
+    977 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/url_helper.rb
+    978 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/sanitize_helper.rb
+    979 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/text_helper.rb
+    980 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/form_tag_helper.rb
+    981 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/form_helper.rb
+    982 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/form_options_helper.rb
+    983 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/number_helper.rb
+    984 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/output_safety_helper.rb
+    985 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/record_identifier.rb
+    986 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/record_tag_helper.rb
+    987 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/rendering_helper.rb
+    988 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers/translation_helper.rb
+    989 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/helpers.rb
+    990 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/context.rb
+    991 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/template/handlers.rb
+    992 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/template/handlers/erb.rb
+    993 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/template/handlers/builder.rb
+    994 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/template.rb
+    995 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/template/resolver.rb
+    996 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/sprockets/helpers.rb
+    997 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/sprockets/helpers/rails_helper.rb
+    998 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/sprockets/helpers/isolated_helper.rb
+    999 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/base.rb
+   1000 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/view_paths.rb
+   1001 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/rendering.rb
+   1002 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/layouts.rb
+   1003 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/translation.rb
+   1004 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/asset_paths.rb
+   1005 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/helpers.rb
+   1006 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/helpers.rb
+   1007 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/hide_actions.rb
+   1008 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/url_for.rb
+   1009 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/url_for.rb
+   1010 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/logger.rb
+   1011 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/rack_delegation.rb
+   1012 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/redirecting.rb
+   1013 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/rendering.rb
+   1014 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/renderers.rb
+   1015 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/head.rb
+   1016 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/conditional_get.rb
+   1017 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/callbacks.rb
+   1018 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/caching/pages.rb
+   1019 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/caching/actions.rb
+   1020 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/caching/fragments.rb
+   1021 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activerecord-3.2.13/lib/active_record/observer.rb
+   1022 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/caching/sweeping.rb
+   1023 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/caching.rb
+   1024 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/abstract_controller/collector.rb
+   1025 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/implicit_render.rb
+   1026 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/mime_responds.rb
+   1027 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/cookies.rb
+   1028 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/flash.rb
+   1029 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/request_forgery_protection.rb
+   1030 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/force_ssl.rb
+   1031 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/rack-1.4.5/lib/rack/chunked.rb
+   1032 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/streaming.rb
+   1033 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/data_streaming.rb
+   1034 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/http_authentication.rb
+   1035 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/rescuable.rb
+   1036 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/rescue.rb
+   1037 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/instrumentation.rb
+   1038 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/params_wrapper.rb
+   1039 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_view/path_set.rb
+   1040 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/responder.rb
+   1041 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/metal/compatibility.rb
+   1042 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/actionpack-3.2.13/lib/action_controller/base.rb
+   1043 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/activesupport-3.2.13/lib/active_support/message_verifier.rb
+   1044 /Users/AmitAharoni/.rvm/gems/ruby-2.0.0-p0@resque_test/gems/resque-1.24.1/lib/resque/failure/redis.rb
+
+  [NOTE]
+  You may have encountered a bug in the Ruby interpreter or extension libraries.
+  Bug reports are welcome.
+  For details: http://www.ruby-lang.org/bugreport.html
+
+  Abort trap
+  
