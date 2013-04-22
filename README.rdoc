@@ -1,5 +1,14 @@
 This repository is meant to demonstrate segfault caused by resque-web.
 
+== Update
+  There is no need for a Rails app to reproduce this bug. Keeping the repository intact for access to /CrashReporter and /DiagnosticReporter, but to reproduce you can simply do the following:
+  $ rvm use 2.0@clean
+  $ gem install resque
+  $ gem install redis
+  $ resque-web -F
+
+---
+
 resque-web sometimes aborted unexpectedly for a project I'm working on. To debug the issue further, I mounted it to the web server, and got the stack trace attached below.
 
 See /CrashReporter and /DiagnosticReports for crash reports.
